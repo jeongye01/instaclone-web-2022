@@ -1,4 +1,10 @@
-const routes = {
+interface Iroutes{
+  home:string;
+  signUp:string;
+}
+
+
+const routes:Iroutes = {
   home: "/",
   signUp: "/sign-up",
 };

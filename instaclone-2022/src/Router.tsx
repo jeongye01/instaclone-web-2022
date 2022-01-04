@@ -2,17 +2,17 @@ import { BrowserRouter , Switch, Route } from "react-router-dom";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
-import routes from "./routes";
+import {isLoggedIn} from "./States";
+
 function Router() {
-  const isLoggedIn=false;
   return (
       <BrowserRouter>
         <Switch>
-          <Route path={routes.home} exact>
+          <Route path="/" exact>
             isLoggedIn ?  <Home />: <Login />
           </Route>
           {!isLoggedIn ? (
-            <Route path={routes.signUp} exact>
+            <Route path="/sign-up" exact>
             <SignUp />
             </Route>
           ):null}
