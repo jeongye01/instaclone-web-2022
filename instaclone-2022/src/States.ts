@@ -1,2 +1,2 @@
-export const isLoggedIn:Boolean=false;
-export const isDarkMode:Boolean = true;
+export const isLoggedInVar:Boolean=false;
+export const isDarkModeVar:Boolean = false;

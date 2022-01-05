@@ -3,8 +3,6 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 
-import dotenv from 'dotenv'
-dotenv.config();
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,3 +18,6 @@ const firebaseConfig = {
   appId:process.env.REACT_APP_appId,
   measurementId:process.env.REACT_APP_measurementId 
 };
+
+firebase.initializeApp(firebaseConfig);
+export const authService=firebase.auth();

@@ -1,7 +1,7 @@
 import {DefaultTheme} from "styled-components";
 
 export const lightTheme: DefaultTheme = {
-  bgColor:"white",
+  bgColor:"#FAFAFA",
   fontColor:"black",
   borderColor:"black"
 };
@@ -11,3 +11,4 @@ export const darkTheme: DefaultTheme = {
   fontColor:"white",
   borderColor:"white"
 };
+
