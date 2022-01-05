@@ -6,37 +6,14 @@ import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthLayout from '../components/Auth/AuthLayout';
 import TopBox from '../components/Auth/TopBox';
-import BottomBox from '../components/Auth/BottomBox';
-
-
-const Separator=styled.div`
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  width:80%;
-  margin:20px 0px;
-  span{
-    opacity:0.3;
-    font-weight:600;
-   
-  }
-  div{
-    height:1px;
-    width:40%;
-    background-color: ${props=>props.theme.borderColor};
-  }
-  
-`;
+import BottomBox,{BottomLink} from '../components/Auth/BottomBox';
+import Separator from '../components/Auth/Separator';
 const FBLogin=styled.span`
   color:#385185;
   font-weight:600;
 `;
 
 
-const SignUpLink=styled(Link)`
-  color:${(props)=>props.theme.authBtnColor};
-  font-weight:600;
-`;
 
 
 function Login(){
@@ -73,16 +50,13 @@ function Login(){
           
            <input type="submit" value="로그인"/>
          </form>
-         <Separator>
-          <div></div>
-          <span>또는</span>
-          <div></div>
-         </Separator>
+         <Separator />
+        
          <FBLogin> <FontAwesomeIcon icon={faFacebookSquare} />  Facebook으로 로그인</FBLogin>
        </TopBox>
        <BottomBox>
           <span>
-            계정이 없으신가요? <SignUpLink to="/sign-up">가입하기</SignUpLink>
+            계정이 없으신가요? <BottomLink to="/">로그인</BottomLink>
           </span>
        </BottomBox>
      
