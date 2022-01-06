@@ -2,6 +2,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import { getAuth, signInWithPopup, FacebookAuthProvider } from "firebase/auth";
+
+
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -21,3 +24,17 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 export const authService=firebase.auth();
+export const faceBookLogin=async()=>{
+  const provider = new FacebookAuthProvider();
+  const auth = getAuth();
+  try{ 
+    const result=await signInWithPopup(auth, provider);
+    const {user}=result;
+    const credential = FacebookAuthProvider.credentialFromResult(result);
+    const accessToken = credential?.accessToken;
+  }catch(error){
+    console.log(error);
+  }
+ 
+
+}

@@ -6,7 +6,7 @@ const Container=styled.div`
   display:flex;
   align-items:center;
   justify-content:space-between;
-  width:80%;
+  width:100%;
   margin:20px 0px;
   span{
     opacity:0.3;

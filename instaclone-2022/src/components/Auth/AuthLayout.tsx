@@ -12,6 +12,7 @@ const Container=styled.div`
 const Wrapper=styled.div`
   max-width:350px;
   width:100%;
+ 
  `;
 
 interface Children{
