@@ -6,9 +6,12 @@ import styled from "styled-components";
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthLayout from '../components/Auth/AuthLayout';
-import TopBox,{Input,Submit} from '../components/Auth/TopBox';
+import TopBox from '../components/Auth/TopBox';
+import { Input,Submit } from '../components/Auth/Input';
 import BottomBox,{BottomLink} from '../components/Auth/BottomBox';
 import Separator from '../components/Auth/Separator';
+import FormError from '../components/Auth/FormError';
+
 
 const JoinMessage=styled.div`
    opacity:0.5;
@@ -73,12 +76,17 @@ function SignUp(){
         <FBLogin onClick={onSocialLogin}> <FontAwesomeIcon icon={faFacebookSquare} />  Facebook으로 로그인</FBLogin>
         <Separator />
          <form onSubmit={handleSubmit(onSubmit)}>
-           {errors.email && "이메일을 입력해 주세요"}
-           <Input {...register("email",{required:true})} placeholder="이메일" type="email" />
-           
-           <Input {...register("name", {required:true})} placeholder="성명" type="text" />
-           <Input {...register("username", {required:true})} placeholder="사용자 이름" type="text" />
-           <Input  {...register("password", {required:true,minLength:6})} placeholder="비밀번호" type="password"/>
+           <FormError message={errors?.email?.message}/>
+           <Input {...register("email",{required:"이메일을 입력해 주세요"})} hasError={Boolean(errors?.email?.message)} placeholder="이메일" type="email" />
+           <FormError message={errors?.name?.message}/>
+           <Input {...register("name", {required:"이름을 입력해 주세요"})} hasError={Boolean(errors?.name?.message)} placeholder="성명" type="text" />
+           <FormError message={errors?.username?.message}/>
+           <Input {...register("username", {required:"사용자 이름을 입력해 주세요"})} hasError={Boolean(errors?.username?.message)} placeholder="사용자 이름" type="text" />
+           <FormError message={errors?.password?.message}/>
+           <Input  {...register("password", {required:"비밀번호를 입력해 주세요",
+                  minLength:{
+                    value:6,message:"비밀번호는 6자 이상이어야 합니다"
+                    }})} hasError={Boolean(errors?.password?.message)} placeholder="비밀번호" type="password"/>
            <Submit type="submit" value="가입"/>
          </form>
 

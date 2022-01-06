@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 import { authService,faceBookLogin } from '../fbase';
+import {useForm,SubmitHandler } from "react-hook-form";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthLayout from '../components/Auth/AuthLayout';
-import TopBox,{Input,Submit} from '../components/Auth/TopBox';
+import TopBox from '../components/Auth/TopBox';
+import { Input,Submit } from '../components/Auth/Input';
+import FormError from '../components/Auth/FormError';
 import BottomBox,{BottomLink} from '../components/Auth/BottomBox';
 import Separator from '../components/Auth/Separator';
 const FBLogin=styled.button`
@@ -15,25 +18,16 @@ const FBLogin=styled.button`
   font-weight:600;
 `;
 
-
+interface IForm{
+  email:string;
+  password:string;
+  }
 
 
 function Login(){
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
-
-  const onChange=(event:React.FormEvent<HTMLInputElement>)=>{
-    const {
-      currentTarget: { name,value },
-    } = event;
-    if(name==="email"){
-      setEmail(value);
-    }else if(name==="password"){
-      setPassword(value);
-    }
-  };
-  const onSubmit=async (event:React.FormEvent<HTMLFormElement>)=>{
-    event.preventDefault();
+  const {register,handleSubmit,formState: { errors }}=useForm<IForm>();
+  const onSubmit: SubmitHandler<IForm> = async (data) =>{ 
+    const {email,password}=data;
     try{await authService.signInWithEmailAndPassword(email, password);
     }catch(error){console.log(error);}
     
@@ -45,11 +39,12 @@ function Login(){
         
          <Link to="/"><img alt="logo" src="img/instagram_logo.png" /></Link>
         
-         <form onSubmit={onSubmit}>
+         <form onSubmit={handleSubmit(onSubmit)}>
+         <FormError message={errors?.email?.message}/>
+          <Input {...register("email",{required:"이메일을 입력해 주세요"})} hasError={Boolean(errors?.email?.message)} placeholder="이메일" type="email" />
          
-           <Input onChange={onChange} value={email} placeholder="이메일" name="email" type="email" required/>
-         
-           <Input onChange={onChange} value={password} placeholder="비밀번호" name="password" type="password" required/>
+          <FormError message={errors?.password?.message}/>
+           <Input  {...register("password", {required:"비밀번호를 입력해 주세요"})} hasError={Boolean(errors?.password?.message)} placeholder="비밀번호" type="password"/>
           
            <Submit type="submit" value="로그인"/>
          </form>
