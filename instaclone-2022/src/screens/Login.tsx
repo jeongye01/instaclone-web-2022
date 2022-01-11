@@ -11,6 +11,9 @@ import { Input,Submit } from '../components/Auth/Input';
 import FormError from '../components/Auth/FormError';
 import BottomBox,{BottomLink} from '../components/Auth/BottomBox';
 import Separator from '../components/Auth/Separator';
+import useUser from "../redux/Auth/userHooks";
+
+
 const FBLogin=styled.button`
   all:unset;
   cursor:pointer;
@@ -25,10 +28,16 @@ interface IForm{
 
 
 function Login(){
+  const {login,isLoggedIn}=useUser();
   const {register,handleSubmit,formState: { errors }}=useForm<IForm>();
   const onSubmit: SubmitHandler<IForm> = async (data) =>{ 
     const {email,password}=data;
-    try{await authService.signInWithEmailAndPassword(email, password);
+    try{
+      login({email,password});
+      console.log(isLoggedIn);
+      await authService.signInWithEmailAndPassword(email, password);
+     
+     
     }catch(error){console.log(error);}
     
   }

@@ -4,15 +4,18 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
 import {authService} from "./fbase";
+import useUser from "./redux/Auth/userHooks";
+
 function Router() {
-  const [isLoggedIn,setIsLoggedIn]=useState(false);
+ 
+  const {isLoggedIn,login,logout}=useUser();
   const [init,setInit]=useState(false);
   useEffect(()=>{
     authService.onAuthStateChanged((user)=>{
       if(user){
-        setIsLoggedIn(true);
+        //login(true);
       }else{
-        setIsLoggedIn(false);
+        logout();
       }
       setInit(true);
     })
