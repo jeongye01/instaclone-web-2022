@@ -24,6 +24,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+export const dbService=firebase.firestore();
 export const authService=firebase.auth();
 export const faceBookLogin=async()=>{
   const provider = new FacebookAuthProvider();

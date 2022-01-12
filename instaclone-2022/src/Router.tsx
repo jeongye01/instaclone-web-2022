@@ -7,7 +7,7 @@ import {authService} from "./fbase";
 import useUser from "./redux/Auth/userHooks";
 
 function Router() {
- 
+  console.log(789789);
   const {isLoggedIn,login,logout}=useUser();
   const [init,setInit]=useState(false);
   useEffect(()=>{
@@ -24,7 +24,7 @@ function Router() {
       <BrowserRouter>
         <Switch>
           {init?
-          <Route path="/" exact>
+          <Route path={["/","/select"]} exact>
             {isLoggedIn ?  <Home />: <Login />}
           </Route>
           :<h1>Initializing...</h1>}
@@ -33,7 +33,13 @@ function Router() {
             <SignUp />
             </Route>
           ):null}
-          
+          <Route path="/create/select" exact>
+            <Home />
+            </Route>
+         
+          <Route path="/create/details" exact>
+            <Home/>
+          </Route>
           <Route>
             <div>Not Found</div>
           </Route>
