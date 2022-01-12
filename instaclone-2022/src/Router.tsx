@@ -7,13 +7,14 @@ import {authService} from "./fbase";
 import useUser from "./redux/Auth/userHooks";
 
 function Router() {
-  console.log(789789);
+
   const {isLoggedIn,login,logout}=useUser();
   const [init,setInit]=useState(false);
   useEffect(()=>{
     authService.onAuthStateChanged((user)=>{
       if(user){
-        //login(true);
+        console.log(user);
+        login(user);
       }else{
         logout();
       }
@@ -22,6 +23,7 @@ function Router() {
   },[]);
   return (
       <BrowserRouter>
+        <Header />
         <Switch>
           {init?
           <Route path={["/","/select"]} exact>

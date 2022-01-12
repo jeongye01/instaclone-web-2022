@@ -5,6 +5,7 @@ import {useState,useEffect} from "react";
 import {useHistory} from "react-router-dom";
 import Modal from "react-modal";
 import { dbService } from '../fbase';
+import useUser from "../redux/Auth/userHooks";
 interface Styles{
   overlay:any;
   content:any;
@@ -32,29 +33,23 @@ const customStyles:Styles = {
 Modal.setAppElement('#root');
 function Home(){
   const history=useHistory();
+  const [text,setText]=useState<String>("");
   const [posts,setPosts]=useState<Array<any>>([]);
   const [isSelectModal, setSelectModal] = useState(false);
   const [isDetailModal, setDetailModal] = useState(false);
   const [attachment,setAttachment]=useState();
-  const getPosts=async()=>{
+  const {userData}=useUser();
+
   
-  try{
-    const dbPosts=await dbService.collection("posts").get();
-     dbPosts.forEach((document:any)=>{
-       const postObject={
-         ...document.data(),
-         id:document.id
-       }
-        setPosts((prev)=>[postObject,...prev]); 
+ useEffect(()=>{
+    dbService.collection("posts").onSnapshot((snapshot)=>{
+       const postArray=snapshot.docs.map(doc=>({
+         id:doc.id,
+         ...doc.data()
+       }));
+       setPosts(postArray);
     });
   
-  }catch(error){
-    console.log(error);
-  }
-  };
-  
-  useEffect(()=>{
-    getPosts();
   },[]);
   
   const openSelectModal=()=> {
@@ -65,11 +60,11 @@ function Home(){
 
   const closeSelectModal=()=> {
     setSelectModal(false);
-    history.goBack();
+    history.push("/");
   }
   const closeDetailModal=()=> {
     setDetailModal(false);
-    history.goBack();
+    history.push("/");
   }
   const onSubmit=()=>{
     console.log();
@@ -93,18 +88,27 @@ function Home(){
     }
 }
   const onUpload=async ()=>{
-    const post="";
+    try{
     await dbService.collection("posts").add({
-      post,
-      createdAt:Date.now()
+      attachment,
+      text,
+      meta:{
+        createdAt:Date.now(),
+        creatorId:userData.uid
+      }
     });
+    closeDetailModal();
+  }catch(error){
+    console.log(error);
+  }
   };
   return(
     <>
     <div>
-      {posts.map(post=>
+    {posts.map(post=>
       <div key={post.id}>
-         {post}
+         <img src={post.attachment} alt="" width="50px" height="50px"/>
+         <span>{post.text}</span>
       </div>)}
     </div>
      <button onClick={openSelectModal}>Open Modal</button>
@@ -134,11 +138,10 @@ function Home(){
         <button onClick={closeDetailModal}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
         <div>새 게시물 만들기</div>
         <button onClick={onUpload}>업로드</button>
-        <img src={attachment} width="50px" height="50px"/>
-        <form>
-          <textarea name="postText" placeholder="문구 입력..."/>
+        <img alt="" src={attachment} width="50px" height="50px"/>
+        <textarea name="postText" onChange={event=>setText(event.target.value)} placeholder="문구 입력..."/>
           
-        </form>
+       
        
     </Modal>
       <h1>Home!</h1>
