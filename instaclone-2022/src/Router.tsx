@@ -3,8 +3,10 @@ import { useState,useEffect } from 'react';
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
+import Layout from "./components/Layout";
 import {authService} from "./fbase";
 import useUser from "./redux/Auth/userHooks";
+import UploadModal from './components/UploadModal';
 
 function Router() {
 
@@ -23,11 +25,14 @@ function Router() {
   },[]);
   return (
       <BrowserRouter>
-        <Header />
-        <Switch>
+         <Switch>
           {init?
-          <Route path={["/","/select"]} exact>
-            {isLoggedIn ?  <Home />: <Login />}
+          <Route path={["/","/create/select","/create/details"]} exact>
+            {isLoggedIn ?  
+                 (<Layout>
+                    <UploadModal/>
+                    <Home />
+                  </Layout>): (<Login />)}
           </Route>
           :<h1>Initializing...</h1>}
           {!isLoggedIn ? (
@@ -35,17 +40,11 @@ function Router() {
             <SignUp />
             </Route>
           ):null}
-          <Route path="/create/select" exact>
-            <Home />
-            </Route>
-         
-          <Route path="/create/details" exact>
-            <Home/>
-          </Route>
+
           <Route>
             <div>Not Found</div>
           </Route>
-        </Switch>
+          </Switch>
       </BrowserRouter>
   
   );
