@@ -6,7 +6,7 @@ import SignUp from "./screens/SignUp";
 import Layout from "./components/Layout";
 import {authService} from "./fbase";
 import useUser from "./redux/Auth/userHooks";
-import UploadModal from './components/UploadModal';
+import UploadModal from './components/PostUpload/UploadModal';
 
 function Router() {
 

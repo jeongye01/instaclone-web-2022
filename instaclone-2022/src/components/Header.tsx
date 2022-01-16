@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import useUser from "../redux/Auth/userHooks";
 import {Link,useHistory} from "react-router-dom";
-import UploadModal from "./UploadModal";
+
 const SHeader = styled.header`
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};

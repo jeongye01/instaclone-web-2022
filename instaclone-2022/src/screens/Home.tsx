@@ -1,7 +1,24 @@
 import {useState,useEffect} from "react";
 import { dbService } from '../fbase';
+import styled from "styled-components";
 
+const Video=styled.video`
+   width:600px;
+   max-width:100%;
+   height:300px;
+   object-fit:cover;
+`;
 
+const VideoContainer=styled.div`
+   width:300px;
+   height:300px;
+  
+`;
+const Post=styled.div`
+
+   
+
+`;
 function Home(){
 
   const [posts,setPosts]=useState<Array<any>>([]);
@@ -27,14 +44,18 @@ function Home(){
     <>
     <div>
     {posts.map(post=>
-      <div key={post.id}>
-         <img src={post.attachment} alt="" width="50px" height="50px"/>
-         <span>{post.text}</span>
-      </div>)}
+      <Post  key={post.id}>
+         {post.isImage?
+         <img src={post.attachmentUrl} alt="" width="100px" height="100px"/>:null
+         }
+         <VideoContainer>
+         <Video >
+           <source  src={post.attachmentUrl} type="video/mp4"/>
+        </Video>
+        </VideoContainer>
+        
+      </Post>)}
     </div>
-    
-    
-      <h1>Home!</h1>
     </>
   );
 }

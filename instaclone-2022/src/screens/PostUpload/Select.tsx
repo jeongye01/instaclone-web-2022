@@ -1,101 +1,87 @@
+import {v4 as uuidv4} from "uuid";
 import {useHistory, useLocation } from "react-router-dom";
 import {useEffect, useState} from "react";
 import Modal from "react-modal";
-import {faPlusSquare,faTimesCircle} from "@fortawesome/free-regular-svg-icons"
+import {faTimesCircle} from "@fortawesome/free-regular-svg-icons"
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useUser from "../redux/Auth/userHooks";
-import { dbService } from '../fbase';
-interface Styles{
-  overlay:any;
-  content:any;
-}
-const customStyles:Styles = {
-  overlay: {
-		position: "fixed",
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		backgroundColor: "rgba(0, 0, 0, 0.83)",
-		zIndex: 10,
-	},
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    
-  },
-};
+import useUser from "../../redux/Auth/userHooks";
+import { dbService, storageService } from '../../fbase';
+import modalStyles from "./components/PostUpload/sharedModalStyles";
+
 Modal.setAppElement('#root');
 
-interface IUpload{
-  modalOpen:boolean;
-};
-
 function UploadModal(){
-  
+
   const history=useHistory();
   const location = useLocation();
   const [isSelectModal, setSelectModal] = useState(false);
   const [isDetailModal, setDetailModal] = useState(false);
   const [attachment,setAttachment]=useState();
+  const [isImage, setIsImage]=useState(true);
   const [text,setText]=useState<String>("");
   const {userData}=useUser();
+  
   const openSelectModal=()=> {
     console.log("open modal");
     setSelectModal(true);
     
   } 
-
   const closeSelectModal=()=> {
     setSelectModal(false);
     console.log("close modal");
     history.goBack();
   }
-  const openDetailModal=()=>{
-    setDetailModal(true);
-    history.push("/create/details");
-  }
-  const closeDetailModal=()=> {
-    setDetailModal(false);
-    history.push("/");
-  }
+
   const onFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
     const {target:{files}}=event;
-    console.log(files);
+   
   
     if(files) {
       const file=files[0];
       const reader=new FileReader();
+      //결과
       reader.onloadend=(finishedEvent:any)=>{
         const {
           currentTarget:{result}
         }=finishedEvent;
+        if(result.indexOf("image")===-1){
+          setIsImage(false);
+          console.log("Its video");
+         // extractThumnail();
+        }
+        else setIsImage(true);
+      
         setAttachment(result);
         setSelectModal(false);
         openDetailModal();
-      }//결과
+      }
       reader.readAsDataURL(file); //여기서 파일 읽기 시작
     }
   }
   const onUpload=async ()=>{
     try{
-    await dbService.collection("posts").add({
-      attachment,
+    let attachmentUrl="";
+    if(attachment){
+      const attachmentRef=storageService.ref().child(`${userData.uid}/${uuidv4()}`);
+      const response=await attachmentRef.putString(attachment,"data_url");
+      attachmentUrl=await response.ref.getDownloadURL();
+     }
+     const post={
+      attachmentUrl,
       text,
+      isImage,
       meta:{
         createdAt:Date.now(),
         creatorId:userData.uid
       }
-    });
+     };
+
+    await dbService.collection("posts").add(post);
     closeDetailModal();
-  }catch(error){
+    }catch(error){
     console.log(error);
-  }
+    }
   };
   useEffect(()=>{
     if("/create/select"===location.pathname){
@@ -108,7 +94,7 @@ function UploadModal(){
       <Modal
         isOpen={isSelectModal}
         onRequestClose={closeSelectModal}
-        style={customStyles}
+        style={modalStyles}
         ariaHideApp={false}
       >
       <button onClick={closeSelectModal}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
@@ -124,7 +110,7 @@ function UploadModal(){
       <Modal
         isOpen={isDetailModal}
         onRequestClose={closeDetailModal}
-        style={customStyles}
+        style={modalStyles}
         ariaHideApp={false}
       >
         <button onClick={closeDetailModal}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
