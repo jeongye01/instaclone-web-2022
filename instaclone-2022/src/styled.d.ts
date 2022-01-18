@@ -7,5 +7,6 @@ declare module 'styled-components'{
     borderColor:string;
     boxColor:string;
     authBtnColor:string;
+    reactionColor:string;
   }
 }

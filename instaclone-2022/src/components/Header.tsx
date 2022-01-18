@@ -5,8 +5,8 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import useUser from "../redux/Auth/userHooks";
-import {Link,useHistory} from "react-router-dom";
-
+import {Link,useHistory,useLocation} from "react-router-dom";
+import SelectModal from '../screens/PostUpload/Select';
 const SHeader = styled.header`
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
@@ -37,7 +37,9 @@ const Icon = styled.button`
 function Header() {
   const {isLoggedIn}=useUser();
   const history=useHistory();
-
+  const location=useLocation();
+  const [overlayLoc,setOverlayLoc]=useState<string>("");
+ 
   return (
     <SHeader>
       <Wrapper>
@@ -53,12 +55,13 @@ function Header() {
               <Icon>
                 <FontAwesomeIcon icon={faCompass} />
               </Icon>
-              <Icon onClick={()=>{history.push("/create/select")}}>
+              <Icon onClick={()=>{setOverlayLoc(location.pathname); history.push("/create/select")}}>
                 <FontAwesomeIcon icon={faPlusSquare}  />
               </Icon>
               <Icon>
                 <FontAwesomeIcon icon={faUser} />
               </Icon>
+              <SelectModal overlayLoc={overlayLoc}/>
             </>
           ) : null}
         </Column>

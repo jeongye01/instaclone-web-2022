@@ -7,6 +7,7 @@ export const lightTheme: DefaultTheme = {
   borderColor:"#CCCCCC",
   boxColor:"white",
   authBtnColor:"#1289F1",
+  reactionColor:"#1289F1"
 };
 
 export const darkTheme: DefaultTheme = {
@@ -15,6 +16,7 @@ export const darkTheme: DefaultTheme = {
   borderColor:"white",
   boxColor:"black",
   authBtnColor:"black",
+  reactionColor:"red"
 };
 
 export const GlobalStyles=createGlobalStyle`

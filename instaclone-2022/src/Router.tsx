@@ -6,7 +6,8 @@ import SignUp from "./screens/SignUp";
 import Layout from "./components/Layout";
 import {authService} from "./fbase";
 import useUser from "./redux/Auth/userHooks";
-import UploadModal from './components/PostUpload/UploadModal';
+import SelectModal from './screens/PostUpload/Select';
+import DetailModal from './screens/PostUpload/Select';
 
 function Router() {
 
@@ -30,7 +31,6 @@ function Router() {
           <Route path={["/","/create/select","/create/details"]} exact>
             {isLoggedIn ?  
                  (<Layout>
-                    <UploadModal/>
                     <Home />
                   </Layout>): (<Login />)}
           </Route>
@@ -49,4 +49,5 @@ function Router() {
   
   );
 }
+
 export default Router;

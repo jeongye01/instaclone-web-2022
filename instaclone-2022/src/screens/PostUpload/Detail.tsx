@@ -1,41 +1,40 @@
 import {v4 as uuidv4} from "uuid";
-import {useHistory, useLocation } from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Modal from "react-modal";
-import {faPlusSquare,faTimesCircle} from "@fortawesome/free-regular-svg-icons"
-import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
+import {faTimesCircle} from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUser from "../../redux/Auth/userHooks";
 import { dbService, storageService } from '../../fbase';
-import { createFFmpeg,fetchFile } from '@ffmpeg/ffmpeg';
-import modalStyles from "./components/PostUpload/sharedModalStyles";
+import modalStyles from "../../components/PostUpload/sharedModalStyles";
 
 Modal.setAppElement('#root');
+interface IdetailModal{
+  attachment:string;
+  isImage:boolean;
+  overlayLoc:string;
+  
+}
 
-interface IUpload{
-  modalOpen:boolean;
-};
+function DetailModal(props:IdetailModal){
 
-function UploadModal(){
-
+  const {attachment,isImage,overlayLoc}=props;
   const history=useHistory();
-  const location = useLocation();
-  const [isSelectModal, setSelectModal] = useState(false);
-  const [isDetailModal, setDetailModal] = useState(false);
-  const [attachment,setAttachment]=useState();
-  const [thumnail,setThumbnail]=useState();
-  const [isImage, setIsImage]=useState(true);
+  const location=useLocation();
+  const [modalOpen, setmodalOpen] = useState<boolean>(false);
   const [text,setText]=useState<String>("");
   const {userData}=useUser();
   
 
   const openDetailModal=()=>{
-    setDetailModal(true);
+    setmodalOpen(true);
     history.push("/create/details");
   }
   const closeDetailModal=()=> {
-    setDetailModal(false);
-    history.push("/");
+    setmodalOpen(false);
+    console.log(overlayLoc);
+    history.push(overlayLoc);
+   
   }
 
   const onUpload=async ()=>{
@@ -63,31 +62,15 @@ function UploadModal(){
     }
   };
   useEffect(()=>{
-    if("/create/select"===location.pathname){
-      openSelectModal();
-      console.log(isSelectModal);
-    }
-  },[location]);
+    if(attachment){
+      openDetailModal();
+      console.log(modalOpen);
+    } 
+  },[attachment]);
   return(
     <>
       <Modal
-        isOpen={isSelectModal}
-        onRequestClose={closeSelectModal}
-        style={modalStyles}
-        ariaHideApp={false}
-      >
-      <button onClick={closeSelectModal}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
-    
-        <div>새 게시물 만들기</div>
-        <FontAwesomeIcon icon={faPhotoVideo} size='3x' />
-        <span>사진과 동영상을 여기에 끌어다 놓으세요</span>
-        
-        <input  type="file" accept="image/* , video/*" onChange={onFileChange}/>
-      
-    
-      </Modal>
-      <Modal
-        isOpen={isDetailModal}
+        isOpen={modalOpen}
         onRequestClose={closeDetailModal}
         style={modalStyles}
         ariaHideApp={false}
@@ -106,4 +89,4 @@ function UploadModal(){
 }
 
 
-export default UploadModal;
+export default DetailModal;
