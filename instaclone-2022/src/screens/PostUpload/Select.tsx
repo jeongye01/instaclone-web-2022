@@ -35,21 +35,17 @@ function SelectModal(props:IselecModal){
       fileToAttachment(acceptedFiles[0]);
 
   }, []);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+  const {getRootProps,isDragActive} = useDropzone({onDrop});
   
-  const InputProps = {
-    ...getInputProps(),
-    multiple: false,
-    accept: "image/*,video/*"
-  };
+;
   
   const RootProps = {
     ...getRootProps(),
   };
   
-  const fileToAttachment=(file:Blob)=>{
+  const fileToAttachment=async (file:Blob)=>{
 
-      console.log(file);
+      
       const reader=new FileReader();
       //결과
       reader.onloadend=(finishedEvent:any)=>{
@@ -62,7 +58,9 @@ function SelectModal(props:IselecModal){
         }
         else {setIsImage(true)};
         setAttachment(result);
-        setmodalOpen(false)
+        history.push("/create/details");
+        setmodalOpen(false);
+       
       }
       reader.readAsDataURL(file); //여기서 파일 읽기 시작
   }
@@ -71,6 +69,7 @@ function SelectModal(props:IselecModal){
     if(files) {
       const file=files[0];
       fileToAttachment(file);
+   
     }
   }
   useEffect(()=>{
@@ -78,13 +77,13 @@ function SelectModal(props:IselecModal){
       setmodalOpen(true);
       console.log(overlayLoc);
       console.log(modalOpen);
-    } 
+    }
   },[location]);
   return(
     <>
       <Modal 
         isOpen={modalOpen}
-        onRequestClose={()=>{history.push(overlayLoc); setmodalOpen(false);}}
+        onRequestClose={()=>{setAttachment("");history.push(overlayLoc); setmodalOpen(false);}}
         style={modalStyles}
         ariaHideApp={false}
       >
@@ -96,7 +95,7 @@ function SelectModal(props:IselecModal){
         <FontAwesomeIcon icon={faPhotoVideo} size='3x' />
         </Icon>
         <span>사진과 동영상을 여기에 끌어다 놓으세요</span>
-        <input {...InputProps}/>
+       
         <input type="file" accept="image/* , video/*" onChange={onFileChange}/>
         
        

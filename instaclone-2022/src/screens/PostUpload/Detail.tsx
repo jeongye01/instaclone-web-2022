@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUser from "../../redux/Auth/userHooks";
 import { dbService, storageService } from '../../fbase';
 import modalStyles from "../../components/PostUpload/sharedModalStyles";
+import Picker from 'emoji-picker-react';
+import { close } from 'inspector';
 
 Modal.setAppElement('#root');
 interface IdetailModal{
@@ -22,23 +24,31 @@ function DetailModal(props:IdetailModal){
   const history=useHistory();
   const location=useLocation();
   const [modalOpen, setmodalOpen] = useState<boolean>(false);
-  const [text,setText]=useState<String>("");
-  const textLimit=20000;
+  const [text,setText]=useState("");
+  const [chosenEmoji, setChosenEmoji] = useState();
+  const [emojiLoaded,setEmojiLoaded]=useState<boolean>(false);
+  const textLimit=2000;
   const {userData}=useUser();
-  
+  const onEmojiClick = (event:React.MouseEvent<Element, MouseEvent>, emojiObject:any) => {
+    setChosenEmoji(emojiObject);
+    console.log(emojiObject.emoji);
+    const {emoji}=emojiObject;
+    setText(text+emoji);
+  };
   const setFormattedText=useCallback(
     text=>{
-      setText(text.slice(0,textLimit));
+      setText(text);
     },[setText]
   );
 
   const openDetailModal=()=>{
-    setmodalOpen(true);
-    history.push("/create/details");
+    
+     
+     setmodalOpen(true);
   }
   const closeDetailModal=()=> {
     setmodalOpen(false);
-    console.log(overlayLoc);
+    setText("");
     history.push(overlayLoc);
    
   }
@@ -53,7 +63,7 @@ function DetailModal(props:IdetailModal){
      }
      const post={
       attachmentUrl,
-      text,
+      text:text.slice(0,textLimit),
       isImage,
       meta:{
         createdAt:Date.now(),
@@ -68,11 +78,11 @@ function DetailModal(props:IdetailModal){
     }
   };
   useEffect(()=>{
-    if(attachment){
+    if(location.pathname==="/create/details" && attachment!==""){
       openDetailModal();
-      console.log(modalOpen);
-    } 
-  },[attachment]);
+      console.log("detial modalOpen");
+    }
+  },[location]);
   return(
     <>
       <Modal
@@ -85,9 +95,19 @@ function DetailModal(props:IdetailModal){
         <div>새 게시물 만들기</div>
         <button onClick={onUpload}>업로드</button>
         <img alt="" src={attachment} width="50px" height="50px"/>
-        <textarea name="postText" onChange={event => setFormattedText(event.target.value)} placeholder="문구 입력..."/>
+        <textarea name="postText"  value={text} onChange={event => setFormattedText(event.target.value)} placeholder="문구 입력..."/>
+        <button onClick={()=>{setEmojiLoaded(!emojiLoaded)}}>Emoji</button>
+        {emojiLoaded?(<div>
+          {chosenEmoji ? (
+            <span>You chose: </span>
+          ) : (
+            <span>No emoji Chosen</span>
+          )}
+          <Picker onEmojiClick={onEmojiClick} />
+        </div>):null}
+        
         <span>{text.length}/{textLimit}</span>
-      
+       
       
       </Modal>
     </>
