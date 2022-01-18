@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from "uuid";
 import {useHistory, useLocation} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Modal from "react-modal";
 import {faTimesCircle} from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,8 +23,14 @@ function DetailModal(props:IdetailModal){
   const location=useLocation();
   const [modalOpen, setmodalOpen] = useState<boolean>(false);
   const [text,setText]=useState<String>("");
+  const textLimit=20000;
   const {userData}=useUser();
   
+  const setFormattedText=useCallback(
+    text=>{
+      setText(text.slice(0,textLimit));
+    },[setText]
+  );
 
   const openDetailModal=()=>{
     setmodalOpen(true);
@@ -79,8 +85,8 @@ function DetailModal(props:IdetailModal){
         <div>새 게시물 만들기</div>
         <button onClick={onUpload}>업로드</button>
         <img alt="" src={attachment} width="50px" height="50px"/>
-        <textarea name="postText" onChange={event=>setText(event.target.value)} placeholder="문구 입력..."/>
-          
+        <textarea name="postText" onChange={event => setFormattedText(event.target.value)} placeholder="문구 입력..."/>
+        <span>{text.length}/{textLimit}</span>
       
       
       </Modal>

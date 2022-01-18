@@ -8,18 +8,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from 'styled-components';
 import modalStyles from "../../components/PostUpload/sharedModalStyles";
 import DetailModal from "./Detail";
+import { preProcessFile } from 'typescript';
 
-interface Iicon{
-  isDragActive:boolean;
-}
+
 interface IselecModal{
   overlayLoc:string;
 }
 
-const Icon=styled.span<Iicon>`
-  color:${(props)=>props.isDragActive? (props.theme.reactionColor):null}
-`;
 
+const Icon=styled.div<{isDragActive?:boolean}>`
+  color:${(props)=>props.isDragActive?props.theme.reactionColor:"inherit"}
+`;
 
 
 
@@ -33,7 +32,7 @@ function SelectModal(props:IselecModal){
   const [isImage, setIsImage]=useState(true);
   const onDrop = useCallback(async (acceptedFiles) => {
     
-      
+      fileToAttachment(acceptedFiles[0]);
 
   }, []);
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
@@ -48,10 +47,9 @@ function SelectModal(props:IselecModal){
     ...getRootProps(),
   };
   
-  const onFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
-    const {target:{files}}=event;
-    if(files) {
-      const file=files[0];
+  const fileToAttachment=(file:Blob)=>{
+
+      console.log(file);
       const reader=new FileReader();
       //결과
       reader.onloadend=(finishedEvent:any)=>{
@@ -62,11 +60,17 @@ function SelectModal(props:IselecModal){
           setIsImage(false);
           console.log("Its video");
         }
-        else setIsImage(true);
+        else {setIsImage(true)};
         setAttachment(result);
         setmodalOpen(false)
       }
       reader.readAsDataURL(file); //여기서 파일 읽기 시작
+  }
+  const onFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
+    const {target:{files}}=event;
+    if(files) {
+      const file=files[0];
+      fileToAttachment(file);
     }
   }
   useEffect(()=>{
@@ -80,7 +84,7 @@ function SelectModal(props:IselecModal){
     <>
       <Modal 
         isOpen={modalOpen}
-        onRequestClose={()=>setmodalOpen(false)}
+        onRequestClose={()=>{history.push(overlayLoc); setmodalOpen(false);}}
         style={modalStyles}
         ariaHideApp={false}
       >
@@ -88,16 +92,16 @@ function SelectModal(props:IselecModal){
       <button onClick={()=>setmodalOpen(false)}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
     
         <div>새 게시물 만들기</div>
-        <Icon {...isDragActive}>
+        <Icon isDragActive={isDragActive}>
         <FontAwesomeIcon icon={faPhotoVideo} size='3x' />
         </Icon>
         <span>사진과 동영상을 여기에 끌어다 놓으세요</span>
-       
-       
         <input {...InputProps}/>
         <input type="file" accept="image/* , video/*" onChange={onFileChange}/>
-
-        </div>
+        
+       
+      </div>
+        
       </Modal>
       <DetailModal overlayLoc={overlayLoc} attachment={attachment} isImage={isImage} />
     </>
