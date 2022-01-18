@@ -8,7 +8,7 @@ import useUser from "../../redux/Auth/userHooks";
 import { dbService, storageService } from '../../fbase';
 import modalStyles from "../../components/PostUpload/sharedModalStyles";
 import Picker from 'emoji-picker-react';
-import { close } from 'inspector';
+
 
 Modal.setAppElement('#root');
 interface IdetailModal{
@@ -49,6 +49,7 @@ function DetailModal(props:IdetailModal){
   const closeDetailModal=()=> {
     setmodalOpen(false);
     setText("");
+    setEmojiLoaded(false);
     history.push(overlayLoc);
    
   }

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from 'styled-components';
 import modalStyles from "../../components/PostUpload/sharedModalStyles";
 import DetailModal from "./Detail";
-import { preProcessFile } from 'typescript';
+
 
 
 interface IselecModal{
@@ -27,9 +27,10 @@ function SelectModal(props:IselecModal){
   const {overlayLoc}=props;
   const history=useHistory();
   const location=useLocation();
-  const [modalOpen, setmodalOpen] = useState<boolean>(false);
+  const [isImage,setIsImage]=useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [attachment,setAttachment]=useState("");
-  const [isImage, setIsImage]=useState(true);
+
   const onDrop = useCallback(async (acceptedFiles) => {
     
       fileToAttachment(acceptedFiles[0]);
@@ -43,9 +44,9 @@ function SelectModal(props:IselecModal){
     ...getRootProps(),
   };
   
-  const fileToAttachment=async (file:Blob)=>{
 
-      
+  const fileToAttachment=async (file:Blob)=>{
+   
       const reader=new FileReader();
       //결과
       reader.onloadend=(finishedEvent:any)=>{
@@ -57,14 +58,18 @@ function SelectModal(props:IselecModal){
           console.log("Its video");
         }
         else {setIsImage(true)};
+      
         setAttachment(result);
-        history.push("/create/details");
-        setmodalOpen(false);
+      
+        closeSelectModal();
        
       }
       reader.readAsDataURL(file); //여기서 파일 읽기 시작
   }
+
+
   const onFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
+  
     const {target:{files}}=event;
     if(files) {
       const file=files[0];
@@ -72,9 +77,24 @@ function SelectModal(props:IselecModal){
    
     }
   }
+  const openSelectModal=()=>{
+    setModalOpen(true);
+  }
+  const closeSelectModal=()=>{
+   
+    if(attachment && attachment!==""){
+      history.push("/create/details");
+    }else{
+      history.push(overlayLoc);
+      setAttachment("");
+    }
+    setModalOpen(false);
+  }
+
+
   useEffect(()=>{
     if(location.pathname==="/create/select"){
-      setmodalOpen(true);
+      openSelectModal();
       console.log(overlayLoc);
       console.log(modalOpen);
     }
@@ -83,12 +103,12 @@ function SelectModal(props:IselecModal){
     <>
       <Modal 
         isOpen={modalOpen}
-        onRequestClose={()=>{setAttachment("");history.push(overlayLoc); setmodalOpen(false);}}
+        onRequestClose={closeSelectModal}
         style={modalStyles}
         ariaHideApp={false}
       >
       <div {...RootProps}>
-      <button onClick={()=>setmodalOpen(false)}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
+      <button onClick={closeSelectModal}><FontAwesomeIcon icon={faTimesCircle} size='lg' /></button>
     
         <div>새 게시물 만들기</div>
         <Icon isDragActive={isDragActive}>
