@@ -1,7 +1,7 @@
 import {useState,useEffect} from "react";
 import { dbService } from '../fbase';
 import styled from "styled-components";
-
+import PlaceList from "../components/PostUpload/PlaceList";
 const Video=styled.video`
    width:600px;
    max-width:100%;
@@ -22,7 +22,7 @@ const Post=styled.div`
 function Home(){
 
   const [posts,setPosts]=useState<Array<any>>([]);
-  
+  const [posTableLoaded,setPosTableLoaded]=useState<boolean>(false);
 
   
  useEffect(()=>{
@@ -42,6 +42,8 @@ function Home(){
  
   return(
     <>
+     <button onClick={()=>{setPosTableLoaded(!posTableLoaded)}}> 위치 </button>
+        {posTableLoaded?(<PlaceList />):null}
     <div>
     {posts.map(post=>
       <Post  key={post.id}>

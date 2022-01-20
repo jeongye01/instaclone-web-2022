@@ -58,7 +58,7 @@ function SelectModal(props:IselecModal){
           console.log("Its video");
         }
         else {setIsImage(true)};
-      
+       
         setAttachment(result);
       
         closeSelectModal();
@@ -71,6 +71,7 @@ function SelectModal(props:IselecModal){
   const onFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
   
     const {target:{files}}=event;
+   
     if(files) {
       const file=files[0];
       fileToAttachment(file);
@@ -86,7 +87,7 @@ function SelectModal(props:IselecModal){
       history.push("/create/details");
     }else{
       history.push(overlayLoc);
-      setAttachment("");
+      
     }
     setModalOpen(false);
   }

@@ -27,6 +27,7 @@ function DetailModal(props:IdetailModal){
   const [text,setText]=useState("");
   const [chosenEmoji, setChosenEmoji] = useState();
   const [emojiLoaded,setEmojiLoaded]=useState<boolean>(false);
+ 
   const textLimit=2000;
   const {userData}=useUser();
   const onEmojiClick = (event:React.MouseEvent<Element, MouseEvent>, emojiObject:any) => {
@@ -50,6 +51,7 @@ function DetailModal(props:IdetailModal){
     setmodalOpen(false);
     setText("");
     setEmojiLoaded(false);
+  
     history.push(overlayLoc);
    
   }
@@ -109,7 +111,6 @@ function DetailModal(props:IdetailModal){
         
         <span>{text.length}/{textLimit}</span>
        
-      
       </Modal>
     </>
   );
