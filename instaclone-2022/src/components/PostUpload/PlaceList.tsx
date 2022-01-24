@@ -1,67 +1,57 @@
-import React, { useEffect,useState } from "react";
+import { AnyARecord } from 'dns';
+import React, { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 const kakao = (window as any).kakao;
- declare global{
-     interface Window{
-         kakao:any;
-     }
- }
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 
+const Input = styled.input`
+  border: 1px solid blue;
+`;
 
-function PlaceList(){
-
-  const [keyword,setKeyword]=useState("");
-  const searchPlaces=(event:React.ChangeEvent<HTMLInputElement>)=>{
-    
-    const {target:{value}}=event;
+function PlaceList() {
+  const [keyword, setKeyword] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
+  const [position, setPosition] = useState('');
+  const searchPlaces = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
     console.log(value);
     setKeyword(value);
-   }
-   
-  useEffect(()=>{
-    console.log(kakao);
-    // 장소 검색 객체를 생성합니다
+  };
+  useEffect(() => {
+    console.log(searchResult);
+  }, [searchResult]);
+  useEffect(() => {
     const ps = new kakao.maps.services.Places();
     console.log(ps);
-   // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-   
-   const placesSearchCB=(data:any, status:any, pagination:any)=> {
-    if (status === kakao.maps.services.Status.OK) {
+    const placesSearchCB = (data: any, status: any, pagination: any) => {
+      console.log('searchRender', keyword);
 
-        // 정상적으로 검색이 완료됐으면
-        // 검색 목록과 마커를 표출합니다
-        //displayPlaces(data);
-
-        // 페이지 번호를 표출합니다
-        //displayPagination(pagination);
-        const placeNames=data.map((place:any)=>place.place_name);
-        console.log(placeNames);
-       
-    }  else if (status === kakao.maps.services.Status.ERROR) {
-
-        alert('검색 결과 중 오류가 발생했습니다.');
-        return;
-
-    }
-   }
-   ps.keywordSearch(keyword,placesSearchCB);
-},[keyword]);
-  
-  return(
+      const placeNames = data.map((place: any) => place.place_name);
+      setSearchResult(placeNames);
+    };
+    ps.keywordSearch(keyword, placesSearchCB);
+  }, [keyword]);
+  return (
     <>
-     <div>
-        <input type="text"  onChange={searchPlaces}/>
+      <div>
+        <Input type="text" onChange={searchPlaces} />
         <div>
-            <ul>
-
-            </ul>
+          {keyword && keyword.length > 1
+            ? searchResult.map((result) => <button onClick={() => setPosition(result)}>{result}</button>)
+            : null}
         </div>
-     </div>
-     </>
+        <span>{position}</span>
+      </div>
+    </>
   );
-   
 }
 export default PlaceList;
-
 
 /*
 
