@@ -6,9 +6,7 @@ import SignUp from './screens/SignUp';
 import Layout from './components/Layout';
 import { authService } from './fbase';
 import useUser from './redux/Auth/userHooks';
-import SelectModal from './screens/PostUpload/Select';
-import DetailModal from './screens/PostUpload/Select';
-
+import Profile from './screens/Profile';
 function Router() {
   const { isLoggedIn, login, logout } = useUser();
   const [init, setInit] = useState(false);
@@ -44,7 +42,11 @@ function Router() {
             <SignUp />
           </Route>
         ) : null}
-
+        <Route path={['/:username', '/create/select', '/create/details']} exact>
+          <Layout>
+            <Profile />
+          </Layout>
+        </Route>
         <Route>
           <div>Not Found</div>
         </Route>
@@ -54,3 +56,5 @@ function Router() {
 }
 
 export default Router;
+/*
+ */

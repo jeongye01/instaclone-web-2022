@@ -11,11 +11,11 @@ declare global {
 const Input = styled.input`
   border: 1px solid blue;
 `;
-
+export let position: string;
 function PlaceList() {
   const [keyword, setKeyword] = useState('');
   const [searchResult, setSearchResult] = useState([]);
-  const [position, setPosition] = useState('');
+  const [positionToUpload, setPositionToUpload] = useState('');
   const searchPlaces = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
@@ -40,17 +40,42 @@ function PlaceList() {
   return (
     <>
       <div>
-        <Input type="text" onChange={searchPlaces} />
-        <div>
-          {keyword && keyword.length > 1
-            ? searchResult.map((result) => <button onClick={() => setPosition(result)}>{result}</button>)
-            : null}
-        </div>
-        <span>{position}</span>
+        {positionToUpload ? (
+          <>
+            <span>{positionToUpload}</span>
+            <button
+              onClick={() => {
+                setPositionToUpload('');
+                setKeyword('');
+              }}
+            >
+              X
+            </button>
+          </>
+        ) : (
+          <>
+            <Input type="text" onChange={searchPlaces} />
+            <div>
+              {keyword && keyword.length > 1
+                ? searchResult.map((result) => (
+                    <button
+                      onClick={() => {
+                        position = result;
+                        setPositionToUpload(result);
+                      }}
+                    >
+                      {result}
+                    </button>
+                  ))
+                : null}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
 }
+
 export default PlaceList;
 
 /*

@@ -1,11 +1,11 @@
-import {useState} from "react";
-import {faPlusSquare,faTimesCircle} from "@fortawesome/free-regular-svg-icons"
-import { faCompass, faUser } from "@fortawesome/free-regular-svg-icons";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styled from "styled-components";
-import useUser from "../redux/Auth/userHooks";
-import {Link,useHistory,useLocation} from "react-router-dom";
+import { useState } from 'react';
+import { faPlusSquare, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
+import { faCompass, faUser } from '@fortawesome/free-regular-svg-icons';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styled from 'styled-components';
+import useUser from '../redux/Auth/userHooks';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import SelectModal from '../screens/PostUpload/Select';
 const SHeader = styled.header`
   width: 100%;
@@ -28,23 +28,25 @@ const Wrapper = styled.div`
 const Column = styled.div``;
 
 const Icon = styled.button`
-  all:unset;
+  all: unset;
   margin-left: 15px;
-  font-size:22px;
-  cursor:pointer;
+  font-size: 22px;
+  cursor: pointer;
 `;
 
 function Header() {
-  const {isLoggedIn}=useUser();
-  const history=useHistory();
-  const location=useLocation();
-  const [overlayLoc,setOverlayLoc]=useState<string>("");
- 
+  const { isLoggedIn } = useUser();
+  const history = useHistory();
+  const location = useLocation();
+  const [overlayLoc, setOverlayLoc] = useState<string>('');
+
   return (
     <SHeader>
       <Wrapper>
         <Column>
-           <Link to="/"><img alt="logo" src="img/instagram_logo.png" width="120px" height="50px" /></Link>
+          <Link to="/">
+            <img alt="logo" src="img/instagram_logo.png" width="120px" height="50px" />
+          </Link>
         </Column>
         <Column>
           {isLoggedIn ? (
@@ -55,13 +57,20 @@ function Header() {
               <Icon>
                 <FontAwesomeIcon icon={faCompass} />
               </Icon>
-              <Icon onClick={()=>{setOverlayLoc(location.pathname); history.push("/create/select")}}>
-                <FontAwesomeIcon icon={faPlusSquare}  />
+              <Icon
+                onClick={() => {
+                  setOverlayLoc(location.pathname);
+                  history.push('/create/select');
+                }}
+              >
+                <FontAwesomeIcon icon={faPlusSquare} />
               </Icon>
               <Icon>
-                <FontAwesomeIcon icon={faUser} />
+                <Link to={`/`}>
+                  <FontAwesomeIcon icon={faUser} />
+                </Link>
               </Icon>
-              <SelectModal overlayLoc={overlayLoc}/>
+              <SelectModal overlayLoc={overlayLoc} />
             </>
           ) : null}
         </Column>
